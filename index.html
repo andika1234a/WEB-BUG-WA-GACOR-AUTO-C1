@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>BUG MODE</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: monospace;
+    }
+    body {
+      background: #000;
+      color: #0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      overflow: hidden;
+      transition: background 0.1s;
+    }
+    h2 {
+      font-size: 24px;
+      cursor: pointer;
+      padding: 12px 24px;
+      border: 2px solid #0f0;
+      transition: 0.3s;
+      z-index: 11;
+    }
+    h2:hover {
+      background-color: #0f0;
+      color: #000;
+    }
+    video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 10;
+      display: none;
+    }
+    .prank-text {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8);
+      color: red;
+      font-size: 20px;
+      padding: 30px;
+      text-align: center;
+      z-index: 20;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h2 id="triggerText">GO TO HALAMAN BUG</h2>
+
+  <video id="bugVideo" autoplay muted loop>
+    <source src="https://files.catbox.moe/x24fxy.mp4" type="video/mp4">
+  </video>
+
+  <audio id="bugSound" loop>
+    <source src="https://files.catbox.moe/eyc6gm.mp3" type="audio/mp3">
+  </audio>
+
+  <div class="prank-text" id="prankText">
+    📡 HP ANDA TELAH DI SADAP!<br><br>
+    📍 Lokasi Anda telah dilacak.<br>
+    📦 Paket misterius sedang dikirim ke rumah Anda.<br>
+    📧 Email Anda telah saya lihat semua!<br><br>
+    📷 Kamera Anda telah aktif.<br>
+    🎙️ Mikrofon Anda sedang merekam...<br><br>
+    ❗Jika tidak ingin data Anda disebar,<br>
+    silakan SEBARKAN web ini sekarang juga!<br><br>
+    👁️ Saya bisa melihat apa yang sedang Anda lakukan sekarang...<br><br>
+    ☠️🖕🏽
+  </div>
+
+  <script>
+    const text = document.getElementById("triggerText");
+    const video = document.getElementById("bugVideo");
+    const audio = document.getElementById("bugSound");
+    const prankText = document.getElementById("prankText");
+
+    function startPrank() {
+      document.body.innerHTML = "";
+      document.body.appendChild(video);
+      document.body.appendChild(audio);
+      document.body.appendChild(prankText);
+      video.style.display = "block";
+      prankText.style.display = "block";
+      video.play();
+      audio.play().catch(() => console.log("Klik layar untuk aktifkan suara."));
+
+      if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
+
+      let toggle = false;
+      setInterval(() => {
+        document.body.style.background = toggle ? "black" : "red";
+        toggle = !toggle;
+      }, 150);
+    }
+
+    text.addEventListener("click", startPrank);
+    document.addEventListener("click", () => {
+      audio.play();
+    });
+  </script>
+</body>
+</html>
